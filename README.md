@@ -1,48 +1,109 @@
-# Dynamic_Hyperparameter_Optimization_LLM
-Code and resources for dynamic hyperparameter optimization of Large Language Models (LLMs) applied causality assessment. Dynamic hyperparameter optimization for LLMs, addressing concept drift and performance degradation, with automated workflows orchestrated through n8n.
+# 🚀 Dynamic_Hyperparameter_Optimization_LLM
 
-The following is an overview of the workflow:
+Code and resources for **dynamic hyperparameter optimization** of Large Language Models (LLMs) applied to **causality assessment** in pharmacovigilance.  
+This project explores how **inference hyperparameters** affect performance and stability over time, addressing **concept drift** and **model degradation** through automated workflows orchestrated in **n8n**.
+
+---
+
+## 🧭 Workflow Overview
+
+The following is an overview of the experimental process:
+
 ![Workflow](images/Workflow_Overview.png)
 
-This experimental process tries to answer the following research questions:
+---
 
-*RQ1 – Data Infrastructure:*
+## 🎯 Research Questions
+
+This experimental setup aims to answer the following key research questions:
+
+**RQ1 – Data Infrastructure**  
 How can pharmacovigilance data be efficiently organized, stored, and accessed to support dynamic automation of LLM-based causality assessments?
 
-*RQ2 – Automation Framework:*
+**RQ2 – Automation Framework**  
 How can an automated workflow be designed to continuously evaluate, optimize, and store results from LLM assessments of ICSRs from databases?
 
-*RQ3 – Hyperparameters:*
-Does changing inference hyperparameters (e.g., temperature, top-p, top-k, etc.) significantly affect the percentage agreement between LLMs and human experts? If so, which hyperparameters—or combinations—lead to the most optimal performance for causality assessment tasks?
+**RQ3 – Hyperparameters**  
+Does changing inference hyperparameters (e.g., temperature, top-p, top-k, etc.) significantly affect the percentage agreement between LLMs and human experts?  
+If so, which hyperparameters—or combinations—lead to the most optimal performance for causality assessment tasks?
 
-*RQ4 – Dynamic Adaptation and Model Degradation:*
+**RQ4 – Dynamic Adaptation and Model Degradation**  
 How can we monitor performance degradation of LLMs over time and apply dynamic hyperparameter optimization to improve or maintain model stability as data distributions evolve?
 
-Description of Each Step
-(a) Human Gold-Standard Evaluations
-This step represents the reference dataset of manually validated causality assessments (around 1,838 reports/ 236 FAERS cases). This is the data that was used in the experimentation.
-Research question addressed: RQ1
+---
 
-(b) SQL Database and CRUD Web Interface
-All data and narratives are structured in a SQL database and made accessible through a CRUD interface. This setup ensures that the information can be easily queried, updated, and integrated into automated workflows.
-Research question addressed: RQ1
+## 🧩 Description of Each Step
 
-(c) Automation Workflow (n8n)
-The workflow automates LLM causality assessments by iterating across multiple hyperparameter settings (temperature) and storing results in the database. 
-Research question addressed: RQ2 
+### **(a) Human Gold-Standard Evaluations**
+This step represents the reference dataset of manually validated causality assessments (around **1,838 reports / 236 FAERS cases**).  
+These serve as the **gold standard** for evaluating model agreement and performance.  
+**Research question addressed:** RQ3  
 
-(d) Model Degradation per Hyperparameter (Temperature)
-Instead of performing a full Bayesian optimization, this step uses a lookup-based re-evaluation of the hyperparameter combinations previously tested in the automation workflow. It compares how performance changes across different datasets or time points to assess whether model stability is maintained even as data distributions and temperature values vary. This step also examines which temperature settings yield the best performance for each dataset, helping to identify shifts in optimal configurations over time.
-Research question addressed: RQ4
+---
 
-⚙️ Environment & Reproducibility
+### **(b) SQL Database and CRUD Web Interface**
+All data and narratives are structured in a **SQL database** and made accessible through a **CRUD interface**.  
+This setup ensures that information can be easily queried, updated, and integrated into automated workflows.  
+**Research question addressed:** RQ1  
 
-Python: 3.10+
+---
 
-Key Libraries: pandas, sqlalchemy, matplotlib, skopt, openai
+### **(c) Automation Workflow (n8n)**
+The workflow automates **LLM causality assessments** by iterating across multiple hyperparameter settings (e.g., temperature) and storing all results in the SQL database.  
+This allows **scalable and reproducible** experimentation with different inference configurations.  
+**Research question addressed:** RQ2  
 
-Database: MySQL (via mysql-connector or sqlalchemy)
+---
 
-Automation: n8n (self-hosted or via ngrok)
+### **(d) Model Degradation per Hyperparameter (Temperature)**
+Instead of performing a full Bayesian optimization, this step performs a **lookup-based re-evaluation** of the hyperparameter combinations previously tested in the automation workflow.  
+It compares how performance changes across different datasets or time points to assess whether **model stability** is maintained even as data distributions and temperature values vary.  
+This step also examines which temperature settings yield the best performance for each dataset, helping to identify **shifts in optimal configurations over time**.  
+**Research question addressed:** RQ4  
+
+---
+
+## 📁 Repository Structure
+
+Each folder corresponds to a major step in the workflow.  
+Steps (a) and (b) are grouped together since both deal with data management and setup.
+
+| Folder | Step | Description | Example Files |
+|:--|:--:|:--|:--|
+| **01_Data_Import_and_Database** | (a)+(b) | Scripts for importing ICSR data, cleaning narratives, and loading them into the SQL database. Includes code for table creation and CRUD setup. | `create_tables.sql`, `import_narratives.py`, `update_main_table.py` |
+| **02_Automation_Workflow** | (c) | Contains the **n8n workflow** and related scripts to run LLM causality assessments across multiple hyperparameter configurations. Automatically stores outputs in SQL tables. | `workflow_n8n.json`, `llm_assessment.py`, `store_results.py` |
+| **03_Model_Degradation_Analysis** | (d) | Scripts for analyzing how performance varies with each hyperparameter and over time. Produces visualizations and summary statistics to detect model drift. | `plot_agreement_vs_temp.py`, `model_drift_analysis.ipynb` |
+| **04_Dynamic_Hyperparameter_Evaluation** | (d) | Lookup-based re-evaluation of previously tested hyperparameter combinations across datasets/time points. Identifies changes in optimal temperature and stability. | `dynamic_lookup_BO.py`, `compare_timepoints.py` |
+
+---
+
+## 📊 Outputs
+
+The main outputs (green boxes in the workflow diagram) include:
+
+| Output | Description |
+|:--|:--|
+| **icsr_assessment_import** | SQL table containing imported ICSR data, including drug–event pairs and narratives. |
+| **performance_metrics** | Table summarizing model outputs for each hyperparameter set (agreement rates, Likert scores, reasoning metrics). |
+| **hp_results** | Table storing hyperparameter configurations and their performance results. |
+| **plots/** | Visualizations such as temperature vs. agreement or degradation trends. |
+| **summary_tables/** | Aggregated summaries comparing models, datasets, and time points. |
+
+---
+
+## ⚙️ Environment & Reproducibility
+
+- **Python:** 3.10+  
+- **Key Libraries:** `pandas`, `sqlalchemy`, `matplotlib`, `skopt`, `openai`, `llama_cpp`  
+- **Database:** MySQL (via `mysql-connector` or `sqlalchemy`)  
+- **Automation:** n8n (self-hosted or via ngrok)  
+
+Each folder contains a short README with more detailed explanations of its scripts and outputs.
+
+---
+
+✨ *Developed as part of the Bioinformatics Project 2 at the University of Copenhagen.*  
+*Author: Manuela Del Castillo* 🧠
+
 
 Each folder includes a short README explaining how to run the scripts and what each output represents.
