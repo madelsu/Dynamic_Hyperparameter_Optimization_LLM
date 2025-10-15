@@ -83,11 +83,10 @@ The main outputs (green boxes in the workflow diagram) include:
 
 | Output | Description |
 |:--|:--|
-| **icsr_assessment_import** | SQL table containing imported ICSR data, including drug–event pairs and narratives. |
-| **performance_metrics** | Table summarizing model outputs for each hyperparameter set (agreement rates, Likert scores, reasoning metrics). |
-| **hp_results** | Table storing hyperparameter configurations and their performance results. |
+| **icsr_assessment_import** | SQL table containing imported ICSR data, including information about report, human gold-standard evaluations and narratives. |
+| **hp_results** | Table storing information about report (case_id, drug, event), inference hyperparameter configurations and LLM output. |
 | **plots/** | Visualizations such as temperature vs. agreement or degradation trends. |
-| **summary_tables/** | Aggregated summaries comparing models, datasets, and time points. |
+| **Tables/** | From Bayesian_Optimization.ipnyb summaries comparing models, datasets, and time points. |
 
 ---
 
@@ -95,15 +94,15 @@ The main outputs (green boxes in the workflow diagram) include:
 
 - **Python:** 3.10+  
 - **Key Libraries:** `pandas`, `sqlalchemy`, `matplotlib`, `skopt`, `openai`, `llama_cpp`  
-- **Database:** MySQL (via `mysql-connector` or `sqlalchemy`)  
+- **Database:** MySQL (via `mysql-connector` or `sqlalchemy`)  and .php files for CRUD web interface. 
 - **Automation:** n8n (self-hosted or via ngrok)  
 
 Each folder contains a short README with more detailed explanations of its scripts and outputs.
 
 ---
 
-✨ *Developed as part of the Bioinformatics Project 2 at the University of Copenhagen.*  
-*Author: Manuela Del Castillo* 🧠
+✨ *Developed as part of the Bioinformatics Project at the Drug Safety Group, Department of Drug Design and Pharmacology at the University of Copenhagen.*  
+*Authors: Maurizio Sessa and Manuela Del Castillo* 🧠
 
 
 Each folder includes a short README explaining how to run the scripts and what each output represents.
