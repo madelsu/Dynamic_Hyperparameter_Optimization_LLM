@@ -71,7 +71,7 @@ Steps (a) and (b) are grouped together since both deal with data management and 
 | Folder | Step | Description | Files |
 |:--|:--:|:--|:--|
 | **01_Data_Import_and_Database** | (a)+(b) | Scripts for importing ICSR data, cleaning narratives, and loading them into the SQL database. Includes code for table creation and CRUD setup. | `SQL_Database.ipynb`, `Adding_narratives.ipynb`|
-| **02_Automation_Workflow** | (c) | Contains the **n8n workflow** and related scripts to run LLM causality assessments across multiple hyperparameter configurations. Automatically stores outputs in SQL tables. | `automation_workflow_n8n.json`, `llm_assessment.py`, `store_results.py` |
+| **02_Automation_Workflow** | (c) | Contains the **n8n workflow** and related scripts to run LLM causality assessments across multiple hyperparameter configurations. Automatically stores outputs in SQL tables. | `automation_workflow_n8n.json`|
 | **03_Model_Degradation_Analysis** | (d) | Scripts for analyzing how performance varies with each hyperparameter and over time. Produces visualizations and summary statistics to detect model drift. | `agreement_vs_hyperparameters`|
 | **04_Dynamic_Hyperparameter_Evaluation** | (d) | Lookup-based re-evaluation of previously tested hyperparameter combinations across datasets/time points. Identifies changes in optimal temperature and stability. | `Dynamic(look_up)_Bayesian_Op.ipynb.py`|
 
