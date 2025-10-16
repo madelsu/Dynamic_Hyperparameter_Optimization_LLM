@@ -68,12 +68,12 @@ This step also examines which temperature settings yield the best performance fo
 Each folder corresponds to a major step in the workflow.  
 Steps (a) and (b) are grouped together since both deal with data management and setup.
 
-| Folder | Step | Description | Example Files |
+| Folder | Step | Description | Files |
 |:--|:--:|:--|:--|
-| **01_Data_Import_and_Database** | (a)+(b) | Scripts for importing ICSR data, cleaning narratives, and loading them into the SQL database. Includes code for table creation and CRUD setup. | `create_tables.sql`, `import_narratives.py`, `update_main_table.py` |
-| **02_Automation_Workflow** | (c) | Contains the **n8n workflow** and related scripts to run LLM causality assessments across multiple hyperparameter configurations. Automatically stores outputs in SQL tables. | `workflow_n8n.json`, `llm_assessment.py`, `store_results.py` |
-| **03_Model_Degradation_Analysis** | (d) | Scripts for analyzing how performance varies with each hyperparameter and over time. Produces visualizations and summary statistics to detect model drift. | `plot_agreement_vs_temp.py`, `model_drift_analysis.ipynb` |
-| **04_Dynamic_Hyperparameter_Evaluation** | (d) | Lookup-based re-evaluation of previously tested hyperparameter combinations across datasets/time points. Identifies changes in optimal temperature and stability. | `dynamic_lookup_BO.py`, `compare_timepoints.py` |
+| **01_Data_Import_and_Database** | (a)+(b) | Scripts for importing ICSR data, cleaning narratives, and loading them into the SQL database. Includes code for table creation and CRUD setup. | `SQL_Database.ipynb`, `Adding_narratives.ipynb`|
+| **02_Automation_Workflow** | (c) | Contains the **n8n workflow** and related scripts to run LLM causality assessments across multiple hyperparameter configurations. Automatically stores outputs in SQL tables. | `automation_workflow_n8n.json`, `llm_assessment.py`, `store_results.py` |
+| **03_Model_Degradation_Analysis** | (d) | Scripts for analyzing how performance varies with each hyperparameter and over time. Produces visualizations and summary statistics to detect model drift. | `agreement_vs_hyperparameters`|
+| **04_Dynamic_Hyperparameter_Evaluation** | (d) | Lookup-based re-evaluation of previously tested hyperparameter combinations across datasets/time points. Identifies changes in optimal temperature and stability. | `Dynamic(look_up)_Bayesian_Op.ipynb.py`|
 
 ---
 
@@ -93,7 +93,7 @@ The main outputs (green boxes in the workflow diagram) include:
 ## ⚙️ Environment & Reproducibility
 
 - **Python:** 3.10+  
-- **Key Libraries:** `pandas`, `sqlalchemy`, `matplotlib`, `skopt`, `openai`, `llama_cpp`  
+- **Key Libraries:** `pandas`, `sqlalchemy`, `matplotlib`, `skopt`, `openai`
 - **Database:** MySQL (via `mysql-connector` or `sqlalchemy`)  and .php files for CRUD web interface. 
 - **Automation:** n8n (self-hosted or via ngrok)  
 
