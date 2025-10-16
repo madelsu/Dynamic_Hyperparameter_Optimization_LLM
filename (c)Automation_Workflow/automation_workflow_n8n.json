@@ -1,0 +1,377 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "79f338d2-ad4d-4fa5-8cc3-1f42b32807cb",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const TEMPS = [0.1, 0.3, 0.7, 1.0];\nconst DEFAULT_FREQ_PEN = 0.0;\nconst DEFAULT_MAX_NEW_TOKENS = 512;\n\nconst inItem = items[0];\nconst caseData = inItem.json;\n\n// Expand one case into N items, one per temperature\nreturn TEMPS.map(t => ({\n  json: {\n    ...caseData,\n    temperature: t,\n    frequency_penalty: DEFAULT_FREQ_PEN,\n    max_new_tokens: DEFAULT_MAX_NEW_TOKENS\n  }\n}));"
+      },
+      "id": "a66008a8-045a-4673-ad0e-d9db1524c175",
+      "name": "Expand Temperatures",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "hp_results",
+          "mode": "list"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "case_id",
+              "value": "={{ $('Expand Temperatures').item.json.case_id }}"
+            },
+            {
+              "column": "drug",
+              "value": "={{ $('Expand Temperatures').item.json.drug_name }}"
+            },
+            {
+              "column": "event",
+              "value": "={{ $('Expand Temperatures').item.json.pt }}"
+            },
+            {
+              "column": "temperature",
+              "value": "={{ $('Expand Temperatures').item.json.temperature }}"
+            },
+            {
+              "column": "frequency_penalty",
+              "value": "={{ $('Expand Temperatures').item.json.frequency_penalty }}"
+            },
+            {
+              "column": "max_new_tokens",
+              "value": "={{ $('Expand Temperatures').item.json.max_new_tokens }}"
+            },
+            {
+              "column": "llm_output",
+              "value": "={{ $('AI Agent').item.json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d4ceb6ef-750b-4bfa-9c3f-0e517f9fa0dc",
+      "name": "Insert into hp_results",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        -224
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "9RThflEVpEHrpqAX",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "5ea2b708-0c7e-4c7f-9ce4-93aeb58fa1cb",
+      "name": "Done",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "cdbcfe95-6697-4596-b50d-faaf574227f1",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -928,
+        48
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=case information: {{ JSON.stringify($json, null, 2) }}  Compute the Naranjo Algorithm for this case using the following instructions...",
+        "options": {
+          "systemMessage": "You are a pharmacovigilance expert assessing the causality assessment using the naranjo algorithm"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "4bd1a786-0b4a-4637-9e5b-8439712f2be3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {
+          "frequencyPenalty": "={{$json.frequency_penalty}}",
+          "maxTokens": "={{$json.max_new_tokens}}",
+          "temperature": "={{$json.temperature}}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        96
+      ],
+      "id": "46de6f31-6d4a-4fbc-9e7f-f8fdb29868e9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "8yo6iDV8Gy3JCzLb",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        192,
+        48
+      ],
+      "id": "7a4405f8-ba50-4146-be78-d5c168940f1f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "table": {
+          "__rl": true,
+          "value": "hp_results",
+          "mode": "list",
+          "cachedResultName": "hp_results"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "llm_output",
+              "condition": "IS NULL"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -464,
+        -224
+      ],
+      "id": "49382b7b-5079-4336-9e63-5b22719385cf",
+      "name": "Delete table or rows",
+      "credentials": {
+        "mySql": {
+          "id": "9RThflEVpEHrpqAX",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM icsr_assessment_import\nWHERE case_id IN (\n    '1016133064',\n    '1020101731',\n    '101815233',\n    '102183593',\n    '102645664',\n    '118587902',\n    '128675964',\n    '100294532',\n    '100496573',\n    '1005762122'\n);\n",
+        "options": {}
+      },
+      "id": "b0732001-47b9-4bee-a2ed-d8a355f7b2e8",
+      "name": "Select cases",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        -1152,
+        48
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "9RThflEVpEHrpqAX",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1376,
+        -128
+      ],
+      "id": "7a098120-8c5b-4a9d-ab75-db3e1b67c5de",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Select cases",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Temperatures": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into hp_results": {
+      "main": [
+        [
+          {
+            "node": "Delete table or rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Insert into hp_results",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Expand Temperatures",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete table or rows": {
+      "main": [
+        [
+          {
+            "node": "Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select cases": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Select cases",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "76565c87-b074-40c9-9f42-32351f1de845",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00b008b3e0bafc20055c5a5b6318a9ec2215978d29fbc6d8354a00f9e4f6ff25"
+  },
+  "id": "BV9qbY5YTXEZpIej",
+  "tags": []
+}
