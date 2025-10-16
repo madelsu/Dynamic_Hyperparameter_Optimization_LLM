@@ -3,7 +3,8 @@
 This folder contains the PHP/MySQL CRUD web application we developed to visualize, manage, and export results from the ICSR reports.
 It allows us to easily **browse**, **edit**, **import/export**, and **analyze** the cases.
 
-![CRUD](images/CRUD.png)
+![CRUD](../images/CRUD.png)
+
 ---
 
 ## 💡 Overview
