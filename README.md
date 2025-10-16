@@ -103,6 +103,3 @@ Each folder contains a short README with more detailed explanations of its scrip
 
 ✨ *Developed as part of the Bioinformatics Project at the Drug Safety Group, Department of Drug Design and Pharmacology at the University of Copenhagen.*  
 *Authors: Maurizio Sessa and Manuela Del Castillo* 🧠
-
-
-Each folder includes a short README explaining how to run the scripts and what each output represents.
