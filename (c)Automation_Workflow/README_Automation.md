@@ -1,6 +1,6 @@
 # ⚙️ Automation Workflow — Dynamic Inference Pipeline (n8n)
 
-This section documents the **n8n automation workflow** (`automation_workflow.json`) developed for hyperparameter optimization.  
+This section documents the **n8n automation workflow** (`automation_workflow_n8n.json`) developed for hyperparameter optimization.  
 The workflow automates the process of selecting cases, running multiple LLM assessments at different inference settings, and storing all outputs in the SQL database.
 
 ![CRUD](../images/Workflow.png)
