@@ -3,6 +3,7 @@
 This folder contains the PHP/MySQL CRUD web application we developed to visualize, manage, and export results from the ICSR reports.
 It allows us to easily **browse**, **edit**, **import/export**, and **analyze** the cases.
 
+![CRUD](images/CRUD.png)
 ---
 
 ## 💡 Overview
@@ -199,10 +200,5 @@ Use `create_admin.php` once to create the first admin account.
 - Every page includes `auth.php` to ensure only logged-in users can access it.  
 - Avoid uploading untrusted files through `import.php`.  
 
-## 🏷️ Tech Stack
-
-![Stack](https://img.shields.io/badge/Stack-PHP%20%7C%20MySQL%20%7C%20Excel-blue)
-
-Built as part of the *Dynamic Hyperparameter Optimization for Large Language Models in Pharmacovigilance* project — used to manage and evaluate LLM-based causality assessments on ICSR data.
 
 
